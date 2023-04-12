@@ -2,18 +2,18 @@
     <div class="container">
         <h1 class="notes_title">Notes App</h1>
         <div class="notes-form_item">
-                <p>Title</p>
-                <input v-model="title" class="notes-form_input">
-                <p>Description</p>
-                <input v-model="body" class="notes-form_input">
-            </div>
-            <button class="notes-form_btn" @click="createCard">NEW NOTE</button>
-            <div class="block">
-                <span>Notes App</span>
-                <input class="search" v-model="searchQuery" placeholder="Find your note">
-            </div>
+            <p>Title</p>
+            <input v-model="title" class="notes-form_input">
+            <p>Description</p>
+            <input v-model="body" class="notes-form_input">
+        </div>
+        <button class="notes-form_btn" @click="createCard">NEW NOTE</button>
+        <div class="block">
+            <span>Notes App</span>
+            <input class="search" v-model="searchQuery" @input="search" placeholder="Find your note">
+        </div>
         <div class="cards">
-            <div class="card" v-for="card in cards" :key="card.id">
+            <div class="card" v-for="card in cardsResult" :key="card.id">
                 <div class="card-title" :title="card.title">{{ card.title }}</div>
                 <div class="card-body" :title="card.body">{{ card.body }}</div>
                 <div class="card-date">{{ card.date}}</div>
@@ -30,12 +30,14 @@ export default {
             cards: [],
             title: '',
             body: '',
+            searchQuery: '',
+            
        }
     },
     methods: {
         createCard() {
             const res = {id: new Date(), title: this.title , body: this.body, date:new Date().toLocaleString()}
-             this.cards.push(res)
+            this.cards.push(res);
             this.title= '';
             this.body= '';
         },
@@ -43,8 +45,16 @@ export default {
             this.cards = this.cards.filter((card) => {
 			return card.id !== id;
         })
-	},
     },
+},
+computed: {
+    cardsResult() {
+        const res = this.cards.filter((item) => {
+            return item.title.toLowerCase().includes(this.searchQuery.toLowerCase())})
+        return res
+    }
+
+}
 }
 </script>
 
@@ -70,11 +80,11 @@ export default {
 .notes-form_input {
     border-radius: 10px;
     border: 1px solid gray;
-    padding: 5px 10px;
+    padding: 5px 10px ;
     font-size: 20px;
     color: #423e3e;
     font-family:monospace;
-    width: 100%;
+    width: 96%;
 }
 .notes-form_btn {
     background: blueviolet;
@@ -127,7 +137,7 @@ button {
  margin-right: 10px;
  padding: 10px 20px;
  height: 120px;
- width: 300px;
+ width: 250px;
  font-family: Verdana, Geneva, Tahoma, sans-serif;
  position: relative;
  }
